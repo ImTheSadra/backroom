@@ -8,6 +8,7 @@ class ObjectRenderer:
         self.window:pg.Surface = runner.window
         self.wallTextures = self.loadWallTextures()
         self.sky = self.getTexture("./assest/sky.png")
+        self.sky.fill((250,206,98))
         self.skyOffset = 0
     
     def draw(self):
@@ -28,7 +29,7 @@ class ObjectRenderer:
         )
         pg.draw.rect(
             self.window,
-            (50,50,50),
+            (250,206,98),
             (
                 0, self.window.get_height() / 2,
                 self.window.get_width(),
@@ -37,7 +38,10 @@ class ObjectRenderer:
         )
     
     def renderGameObject(self):
-        objects = self.runner.rayCasting.objectsToRender
+        objects = sorted(
+            self.runner.rayCasting.objectsToRender,
+            key=lambda t: t[0], reverse=True
+        )
         for dpeth, image, pos in objects:
             self.window.blit(
                 image, pos
@@ -50,5 +54,7 @@ class ObjectRenderer:
     
     def loadWallTextures(self):
         return {
-            1: self.getTexture("./assest/objects/1.png")
+            1: self.getTexture("./assest/objects/1.png"),
+            2: self.getTexture("./assest/objects/2.png"),
+            3: self.getTexture("./assest/objects/3.png")
         }

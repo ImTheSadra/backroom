@@ -5,6 +5,7 @@ from .player import Player
 from .map import MiniMap
 from .obj import ObjectRenderer
 from .raycasting import RayCasting
+from .spr import SpriteObject, Enemy
 
 class Runner:
     running = False
@@ -20,17 +21,19 @@ class Runner:
         self.player = Player(self)
         self.objectRenderer = ObjectRenderer(self)
         self.rayCasting = RayCasting(self)
+        self.staticSprite = Enemy(self)
 
     def update(self):
         self.player.update()
         self.rayCasting.update()
+        self.staticSprite.update()
 
         pg.display.flip()
         pg.display.update()
         self.clock.tick(60)
     
     def draw(self):
-        self.window.fill((51,51,51))
+        self.window.fill((250,206,95))
         self.objectRenderer.draw()
 
     def checkEvent(self):

@@ -47,9 +47,15 @@ class Player:
             self.angle -= 0.03
         if keys[K_RIGHT]:
             self.angle += 0.03
+        
+
+        if self.angle < np.deg2rad(0):self.angle = np.deg2rad(360)
+        if self.angle > np.deg2rad(360):self.angle = np.deg2rad(0)
+
+        pg.display.set_caption(str(np.rad2deg(self.angle)))
     
     def checkWall(self, x:int, y:int):
-        return not self.map.miniMap[y][x] != 0
+        return not self.map.miniMap[y][x] > 0
     
     def checkWallCollition(self, x, y):
         if self.checkWall(int(self.x + x), int(self.y)):
