@@ -4,7 +4,7 @@ class DB:
     path = "./data.json"
     data:dict = {}
     def __init__(self) -> None:
-        self.read()
+        self.load()
 
     def load(self):
         with open(self.path, "rb") as f:

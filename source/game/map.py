@@ -1,21 +1,15 @@
 import pygame as pg
-
-_ = False
-
-miniMap = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-    [1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 3],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-]
+from ..db import DB
 
 class MiniMap:
     def __init__(self, game) -> None:
         self.game = game
-        self.miniMap = miniMap
+        db = DB()
+        db.load()
+        data = db.data
+        self.game = game
+        self.miniMap = data["levels"][str(data["cLevel"])]["map"]
+        print(self.miniMap)
         self.worldMap = {}
         self.getMap()
 

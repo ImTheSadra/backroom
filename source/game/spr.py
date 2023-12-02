@@ -2,17 +2,18 @@ import pygame as pg
 from .settings import *
 from .player import Player
 from PIL import Image
+from .settings import *
 
 class SpriteObject:
-    frames:list[pg.Surface] = []
+    frames = []
     frame = 0
-    path = "./assest/player.git"
+    path = "./assest/sprite/1.png"
     def __init__(self, runner, path:str=None, pos=(9.5,3.5)) -> None:
         self.runner = runner
-        if path == None:path = self.path
         self.player:Player = runner.player
         self.x, self.y = pos
-        img = Image.open("./assest/sprite/2.gif")
+        try:img = Image.open(path)
+        except:img = Image.open(self.path)
         for i in range(img.n_frames):
             img.seek(i)
             rgba = img.convert("RGBA")
@@ -21,13 +22,13 @@ class SpriteObject:
                 rgba.size,
                 "RGBA"
             )
-            surf = pg.transform.scale(
-                surf,
-                (
-                    surf.get_width()*3,
-                    surf.get_height()*3
-                )
-            )
+            # surf = pg.transform.scale(
+            #     surf,
+            #     (
+            #         surf.get_width()*3,
+            #         surf.get_height()*3
+            #     )
+            # )
             self.frames.append(surf)
         self.width = self.frames[0].get_width()
         self.halfWidth = self.frames[0].get_width() // 2
@@ -78,18 +79,52 @@ class SpriteObject:
 
     def update(self):
         self.getSprite()
-        self.frame += 0.1
-        if round(self.frame) >= len(self.frames):
-            self.frame = 0
 
 class Enemy(SpriteObject):
+    target = None
+    def checkWall(self, x:int, y:int):
+        return not self.runner.map.miniMap[y][x] > 0
+    
+    def checkWallCollition(self, x, y):
+        if self.checkWall(int(self.x + x), int(self.y)):
+            self.x += x
+        if self.checkWall(int(self.x), int(self.y + y)):
+            self.y += y
+
+    def getTarget(self):
+        x = []
+        for value in range(140, 160):
+            x.append(value/100)
+        y = []
+
+        for value in range(140, 160):
+            y.append(value/100)
+        return x, y
+
     def update(self):
-        if self.x > self.player.x:
-            self.x -= 0.01
-        if self.x < self.player.x:
-            self.x += 0.01
-        if self.y > self.player.y:
-            self.y -= 0.01
-        if self.y < self.player.y:
-            self.y += 0.01
+        # if self.target == None:self.target = self.getTarget()
+        # dx, dy = 0, 0
+        # tx, ty = self.target
+
+        # if not self.x in tx:
+        #     if self.x > 1.5:
+        #         dx -= 0.02
+        #     elif self.x < 1.5:
+        #         dx += 0.02
+
+        # if not self.y in ty:
+        #     if self.y > 1.5:
+        #         dy -= 0.02
+        #     elif self.y < 1.5:
+        #         dy += 0.02
+
+        # if dx != 0 or dy != 0:
+        #     self.frame += 0.1
+        #     if round(self.frame) >= len(self.frames):
+        #         self.frame = 0
+        # else:
+        #     self.frame = 0
+
+        # self.checkWallCollition(dx, dy)
+
         return super().update()

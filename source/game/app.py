@@ -6,15 +6,17 @@ from .map import MiniMap
 from .obj import ObjectRenderer
 from .raycasting import RayCasting
 from .spr import SpriteObject, Enemy
+from .lamp import Lamp
+from .floor import Floor
 
-class Runner:
+class Game:
     running = False
-    def __init__(self) -> None:
+    def __init__(self, app) -> None:
         pg.init()
-        self.window = pg.display.set_mode((1200, 700))
-        self.clock = pg.time.Clock()
-        pg.display.set_caption("اتاق پشتی")
+        pg.font.init()
+        self.window = app.window
         self.newGame()
+        self.app = app
     
     def newGame(self):
         self.map = MiniMap(self)
@@ -22,37 +24,32 @@ class Runner:
         self.objectRenderer = ObjectRenderer(self)
         self.rayCasting = RayCasting(self)
         self.staticSprite = Enemy(self)
+        self.lamp = Lamp(self, "./assest/sprite/lamp.gif", (1.5,1.5))
+        self.floor = Floor(self)
 
     def update(self):
         self.player.update()
         self.rayCasting.update()
         self.staticSprite.update()
+        self.lamp.update()
 
-        pg.display.flip()
-        pg.display.update()
-        self.clock.tick(60)
-    
     def draw(self):
         self.window.fill((250,206,95))
         self.objectRenderer.draw()
 
     def checkEvent(self):
         for event in pg.event.get():
-            if event.type == pg.QUIT:self.running = False
+            if event.type == pg.QUIT:
+                self.app.running = False
+                self.running = False
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     self.running = False
+                    self.app.running = False
     
-    def gameLoop(self):
+    def loop(self):
+        if not self.running:
+            return
+        self.update()
         self.draw()
         self.checkEvent()
-        self.update()
-
-    def run(self):
-        self.running = True
-
-        while self.running:
-            self.gameLoop()
-        
-        pg.quit()
-        sys.exit()

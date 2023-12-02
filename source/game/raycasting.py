@@ -16,26 +16,29 @@ class RayCasting:
         self.objectsToRender = []
         for ray, value in enumerate(self.rayCastingResult):
             depth, projHeight, texture, offset = value
+            texture:pg.Surface = self.textures[texture]
+            numRays = self.window.get_width()//2
+            scale = self.window.get_width() // numRays
 
             if projHeight < self.window.get_height():
-                wallColumn = self.textures[texture].subsurface(
-                    offset * (TEXTURE_SIZE - SCALE ),
+                wallColumn = texture.subsurface(
+                    offset * (TEXTURE_SIZE - scale ),
                     0, SCALE, TEXTURE_SIZE
                 )
-                wallColumn = pg.transform.scale(wallColumn, (SCALE, projHeight))
-                wallPos = (ray * SCALE, (self.window.get_height() // 2) - projHeight // 2)
+                wallColumn = pg.transform.scale(wallColumn, (scale, projHeight))
+                wallPos = (ray * scale, (self.window.get_height() // 2) - projHeight // 2)
             else:
                 textureHeight = TEXTURE_SIZE * self.window.get_height() / projHeight
                 
-                wallColumn = self.textures[texture].subsurface(
-                    offset * (TEXTURE_SIZE - SCALE), 
+                wallColumn = texture.subsurface(
+                    offset * (TEXTURE_SIZE - scale), 
                     HALF_TEXTURE_SIZE - (textureHeight // 2),
-                    SCALE, textureHeight
+                    scale, textureHeight
                 )
                 wallColumn = pg.transform.scale(
-                    wallColumn, (SCALE, self.window.get_height())
+                    wallColumn, (scale, self.window.get_height())
                 )
-                wallPos = (ray * SCALE, 0)
+                wallPos = (ray * scale, 0)
 
             self.objectsToRender.append(
                 (depth, wallColumn, wallPos)
@@ -49,7 +52,9 @@ class RayCasting:
         xHor, yHor = 1, 1
 
         angleA = self.runner.player.angle - HALF_FOV + 0.0001
-        for ray in range(NUM_RAYS):
+        
+
+        for ray in range(self.window.get_width()//2):
             
             sinA = math.sin(angleA)
             cosA = math.cos(angleA)
@@ -108,19 +113,6 @@ class RayCasting:
 
             # projection
             projHeight = SCREEN_DIST / (depth + 0.00001)
-
-            # draw walls
-
-            #color = [255 / (1 + depth ** 5 * 0.00002)] * 3
-            #pg.draw.rect(
-            #     self.game.screen,
-            #     color,
-            #     (
-            #         ray * SCALE,
-            #         (HEIGHT // 2) - projHeight // 2,
-            #         SCALE, projHeight
-            #     )
-            # )
 
             self.rayCastingResult.append(
                 (depth, projHeight, texture, offset)

@@ -8,14 +8,23 @@ import numpy as np
 class Player:
     rel = 0
     speed = 0.06
+    velocity = 0
+    gravity = 1
     def __init__(self, runner) -> None:
         self.runner = runner
         self.window:pg.Surface = runner.window
         self.map:MiniMap = runner.map
-        self.x, self.y = 2, 2
+        self.x, self.y, self.z = 2, 2, 0
         self.angle = 0
     
     def movement(self):
+        self.velocity += self.gravity
+        self.z += self.velocity
+
+        if self.z > 0:
+            self.velocity = 0
+            self.z = 0
+
         sinA = math.sin(self.angle)
         cosA = math.cos(self.angle)
 
@@ -40,6 +49,8 @@ class Player:
         if keys[K_a]:
             dx -= vSpeedCos
             dy -= vSpeedSin
+        if keys[K_SPACE] and self.z == 0:
+            self.velocity -= 10
         
         self.checkWallCollition(dx, dy)
 
@@ -52,7 +63,7 @@ class Player:
         if self.angle < np.deg2rad(0):self.angle = np.deg2rad(360)
         if self.angle > np.deg2rad(360):self.angle = np.deg2rad(0)
 
-        pg.display.set_caption(str(np.rad2deg(self.angle)))
+        #pg.display.set_caption(str(np.rad2deg(self.angle)))
     
     def checkWall(self, x:int, y:int):
         return not self.map.miniMap[y][x] > 0
@@ -86,7 +97,7 @@ class Player:
 
     def mouseContorol(self):
         x, y = pg.mouse.get_pos()
-        if x < MOUSE_BORDER_LEFT or x > MOUSE_BORDER_RIGHT:
+        if x < MOUSE_BORDER_LEFT or x > MOUSE_BORDER_RIGHT(self.window):
             pg.mouse.set_pos(
                 (
                     self.window.get_width()/2,

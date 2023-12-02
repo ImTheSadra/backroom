@@ -1,3 +1,6 @@
-from source import Runner
+from source import App
 
-Runner().run()
+app = App()
+
+if __name__ == "__main__":
+    app.run()
