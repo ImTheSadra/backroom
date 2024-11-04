@@ -7,5 +7,6 @@ email : `m.sadra.gorji@gmail.com`
 phone : `09109642551`
 
 - ادیتور تصاویر
+سپر طاهرخانی
 [youtube](https://www.youtube.com/@shokey_o)
-email : ``
+`دوست نداشتن شماره تلفن و ایمیل بدن...`
